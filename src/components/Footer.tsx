@@ -53,7 +53,7 @@ const Footer = () => {
                 Privacy
               </a>
               <span>·</span>
-              <span>© 2026 Dockbit</span>
+              <span>© 2026 Clickbit</span>
             </div>
           </div>
         </div>
