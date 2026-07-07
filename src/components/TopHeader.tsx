@@ -20,7 +20,7 @@ const TopHeader = () => {
             </div>
 
             {/* Right: theme toggle */}
-            <div className="flex items-center gap-3 hidden md:flex">
+            <div className="flex items-center gap-3">
               <ThemeToggle />
             </div>
           </div>
