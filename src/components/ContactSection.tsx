@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Check, ArrowRight, AlertCircle } from 'lucide-react'
 import GradientText from './GradientText'
 
-const WEB3FORMS_ACCESS_KEY = 'dddaa146-17a7-4718-9858-9ea5579da96a'
+const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || 'dddaa146-17a7-4718-9858-9ea5579da96a'
 const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
 
 const ContactSection = () => {
