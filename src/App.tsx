@@ -11,6 +11,9 @@ import FAQ from './components/FAQ'
 import ContactSection from './components/ContactSection'
 import Footer from './components/Footer'
 import PrivacyPolicy from './components/PrivacyPolicy'
+import RefundPolicy from './components/RefundPolicy'
+import ThirdPartyLicenses from './components/ThirdPartyLicenses'
+import TermsOfService from './components/TermsOfService'
 
 function App() {
   const [route, setRoute] = useState(() => window.location.pathname)
@@ -30,6 +33,42 @@ function App() {
         <TopHeader />
         <div className="pt-20">
           <PrivacyPolicy />
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (route === '/refund') {
+    return (
+      <div className="min-h-screen">
+        <TopHeader />
+        <div className="pt-20">
+          <RefundPolicy />
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (route === '/licenses') {
+    return (
+      <div className="min-h-screen">
+        <TopHeader />
+        <div className="pt-20">
+          <ThirdPartyLicenses />
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (route === '/terms') {
+    return (
+      <div className="min-h-screen">
+        <TopHeader />
+        <div className="pt-20">
+          <TermsOfService />
         </div>
         <Footer />
       </div>

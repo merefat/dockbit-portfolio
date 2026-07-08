@@ -53,6 +53,18 @@ const Footer = () => {
                 Privacy
               </a>
               <span>·</span>
+              <a href="/terms" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/terms'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="hover:text-cyan transition-colors">
+                Terms
+              </a>
+              <span>·</span>
+              <a href="/refund" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/refund'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="hover:text-cyan transition-colors">
+                Refund
+              </a>
+              <span>·</span>
+              <a href="/licenses" onClick={(e) => { e.preventDefault(); window.history.pushState({}, '', '/licenses'); window.dispatchEvent(new PopStateEvent('popstate')); }} className="hover:text-cyan transition-colors">
+                Licenses
+              </a>
+              <span>·</span>
               <span>© 2026 Clickbit</span>
             </div>
           </div>
