@@ -1,12 +1,13 @@
 import { ArrowRight, Rocket, Globe, RotateCcw, FileX } from 'lucide-react'
 
+const stats = [
+  { text: '155+ deployments tracked', icon: Rocket },
+  { text: '3 regions', icon: Globe },
+  { text: '1-click rollback', icon: RotateCcw },
+  { text: '0 Dockerfiles needed', icon: FileX },
+]
+
 const MidPageCTA = () => {
-  const stats = [
-    { text: '155+ deployments tracked', icon: Rocket },
-    { text: '3 regions', icon: Globe },
-    { text: '1-click rollback', icon: RotateCcw },
-    { text: '0 Dockerfiles needed', icon: FileX },
-  ]
 
   return (
     <section className="py-16 md:py-24 bg-[#17293c] relative overflow-hidden">

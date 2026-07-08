@@ -6,44 +6,44 @@ const ChaosScene = React.lazy(() => import('./animations/three/ChaosScene'))
 const OrderScene = React.lazy(() => import('./animations/three/OrderScene'))
 const TerminalMonitor = React.lazy(() => import('./TerminalMonitor'))
 
+const pains = [
+  {
+    icon: Terminal,
+    title: 'SSH-ing into servers',
+    description: 'Manual commands, no history, easy to make mistakes.',
+  },
+  {
+    icon: FileWarning,
+    title: 'Writing Dockerfiles by hand',
+    description: 'Complex syntax, version conflicts, hard to debug.',
+  },
+  {
+    icon: EyeOff,
+    title: 'No visibility',
+    description: 'What\'s running where? When did it last deploy?',
+  },
+]
+
+const solutions = [
+  {
+    icon: Zap,
+    title: 'One-click deploys',
+    description: 'Push to git, and we handle the rest. Zero manual intervention.',
+  },
+  {
+    icon: FileCheck,
+    title: 'Auto-generated configs',
+    description: 'We detect your stack and generate optimized Dockerfiles automatically.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Full visibility dashboard',
+    description: 'Real-time logs, deployment history, and health metrics in one place.',
+  },
+]
+
 const PainSection = () => {
   const [activeView, setActiveView] = useState<'problem' | 'solution'>('problem')
-
-  const pains = [
-    {
-      icon: Terminal,
-      title: 'SSH-ing into servers',
-      description: 'Manual commands, no history, easy to make mistakes.',
-    },
-    {
-      icon: FileWarning,
-      title: 'Writing Dockerfiles by hand',
-      description: 'Complex syntax, version conflicts, hard to debug.',
-    },
-    {
-      icon: EyeOff,
-      title: 'No visibility',
-      description: 'What\'s running where? When did it last deploy?',
-    },
-  ]
-
-  const solutions = [
-    {
-      icon: Zap,
-      title: 'One-click deploys',
-      description: 'Push to git, and we handle the rest. Zero manual intervention.',
-    },
-    {
-      icon: FileCheck,
-      title: 'Auto-generated configs',
-      description: 'We detect your stack and generate optimized Dockerfiles automatically.',
-    },
-    {
-      icon: BarChart3,
-      title: 'Full visibility dashboard',
-      description: 'Real-time logs, deployment history, and health metrics in one place.',
-    },
-  ]
 
   return (
     <section className="py-16 md:py-24 bg-offwhite dark:bg-navy-dark relative overflow-hidden">

@@ -14,8 +14,7 @@ import {
   Globe
 } from 'lucide-react'
 
-const BentoGrid = () => {
-  const features = [
+const features = [
     {
       title: 'Auto GitHub Import',
       description: 'Connect your repo and Dockbit configures the build automatically. No manual setup.',
@@ -95,6 +94,8 @@ const BentoGrid = () => {
       icon: Zap,
     },
   ]
+
+const BentoGrid = () => {
 
   return (
     <section id="features" className="py-16 md:py-24 bg-offwhite dark:bg-navy-dark">

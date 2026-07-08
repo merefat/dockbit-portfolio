@@ -34,6 +34,13 @@ const solutionLogs = [
   { text: '→ View deployment: https://app.dockbit.io/deploy/abc123', type: 'success' },
 ]
 
+const logColorMap: Record<string, string> = {
+  command: 'text-cyan',
+  error: 'text-red-400',
+  success: 'text-green-400',
+  info: 'text-gray-400',
+}
+
 const TerminalMonitor = ({ activeView }: TerminalMonitorProps) => {
   const [visibleLogs, setVisibleLogs] = useState<typeof problemLogs>([])
   const [currentLogIndex, setCurrentLogIndex] = useState(0)
@@ -68,20 +75,7 @@ const TerminalMonitor = ({ activeView }: TerminalMonitorProps) => {
     }
   }, [visibleLogs])
 
-  const getLogColor = (type: string) => {
-    switch (type) {
-      case 'command':
-        return 'text-cyan'
-      case 'error':
-        return 'text-red-400'
-      case 'success':
-        return 'text-green-400'
-      case 'info':
-        return 'text-gray-400'
-      default:
-        return 'text-white'
-    }
-  }
+  const getLogColor = (type: string) => logColorMap[type] || 'text-white'
 
   return (
     <div className="relative h-full min-h-[400px]">

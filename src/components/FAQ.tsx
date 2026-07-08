@@ -2,35 +2,35 @@ import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import GradientText from './GradientText'
 
+const faqs = [
+  {
+    question: "What's the difference between Dockbit and Dokploy?",
+    answer: "Dockbit has full feature parity with Dokploy, but adds three key differentiators: zero-config GitHub auto-import (no manual build tool selection), built-in Tailscale VPN for private mesh networking, and first-class Cloudflare integration managed from the dashboard.",
+  },
+  {
+    question: "Do I need to write a Dockerfile?",
+    answer: "No. Dockbit automatically detects your stack from your GitHub repository and configures the build using Nixpacks, Buildpacks, or a custom Dockerfile if you prefer. Just push your code and we handle the rest.",
+  },
+  {
+    question: "Do you support Docker Compose?",
+    answer: "Yes. Dockbit has native Docker Compose support for full multi-service orchestration. Deploy complex applications with multiple containers, networks, and volumes.",
+  },
+  {
+    question: "Which databases are supported?",
+    answer: "PostgreSQL, MySQL, MongoDB, MariaDB, Redis, and LibSQL. All databases can be created, managed, and backed up directly from the dashboard with automated S3-compatible storage backups.",
+  },
+  {
+    question: "Can I run this across multiple servers?",
+    answer: "Yes. Dockbit supports Docker Swarm clustering for multi-node deployments. Scale your services horizontally across multiple servers with automatic load balancing and service discovery.",
+  },
+  {
+    question: "What's the pricing model?",
+    answer: "Dockbit is self-hosted and free to use. You deploy it on your own infrastructure, so there are no subscription fees. Optional paid support and enterprise features are available for teams that need them.",
+  },
+]
+
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
-
-  const faqs = [
-    {
-      question: "What's the difference between Dockbit and Dokploy?",
-      answer: "Dockbit has full feature parity with Dokploy, but adds three key differentiators: zero-config GitHub auto-import (no manual build tool selection), built-in Tailscale VPN for private mesh networking, and first-class Cloudflare integration managed from the dashboard.",
-    },
-    {
-      question: "Do I need to write a Dockerfile?",
-      answer: "No. Dockbit automatically detects your stack from your GitHub repository and configures the build using Nixpacks, Buildpacks, or a custom Dockerfile if you prefer. Just push your code and we handle the rest.",
-    },
-    {
-      question: "Do you support Docker Compose?",
-      answer: "Yes. Dockbit has native Docker Compose support for full multi-service orchestration. Deploy complex applications with multiple containers, networks, and volumes.",
-    },
-    {
-      question: "Which databases are supported?",
-      answer: "PostgreSQL, MySQL, MongoDB, MariaDB, Redis, and LibSQL. All databases can be created, managed, and backed up directly from the dashboard with automated S3-compatible storage backups.",
-    },
-    {
-      question: "Can I run this across multiple servers?",
-      answer: "Yes. Dockbit supports Docker Swarm clustering for multi-node deployments. Scale your services horizontally across multiple servers with automatic load balancing and service discovery.",
-    },
-    {
-      question: "What's the pricing model?",
-      answer: "Dockbit is self-hosted and free to use. You deploy it on your own infrastructure, so there are no subscription fees. Optional paid support and enterprise features are available for teams that need them.",
-    },
-  ]
 
   return (
     <section className="py-16 md:py-24 bg-white dark:bg-navy">

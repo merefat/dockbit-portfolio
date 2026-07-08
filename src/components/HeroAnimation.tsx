@@ -2,6 +2,16 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { Github, Gitlab, Server } from 'lucide-react'
 
+const CENTER = { x: 240, y: 160 }
+const DISTANCE = 110
+const sources = [
+  { x: CENTER.x - DISTANCE, y: CENTER.y - DISTANCE },
+  { x: CENTER.x + DISTANCE, y: CENTER.y - DISTANCE },
+  { x: CENTER.x - DISTANCE, y: CENTER.y + DISTANCE },
+  { x: CENTER.x + DISTANCE, y: CENTER.y + DISTANCE },
+]
+const LINE_LENGTH = Math.sqrt(DISTANCE * DISTANCE + DISTANCE * DISTANCE)
+
 const HeroAnimation = () => {
   const svgRef = useRef<SVGSVGElement>(null)
   const sourceNodeRefs = useRef<(SVGGElement | null)[]>([])
@@ -17,18 +27,6 @@ const HeroAnimation = () => {
   useEffect(() => {
     if (!svgRef.current) return
 
-    // Hub-and-spoke coordinates
-    const CENTER = { x: 240, y: 160 }
-    const DISTANCE = 110
-
-    // Source positions (X pattern around center)
-    const sources = [
-      { x: CENTER.x - DISTANCE, y: CENTER.y - DISTANCE }, // GitHub: top-left
-      { x: CENTER.x + DISTANCE, y: CENTER.y - DISTANCE }, // GitLab: top-right
-      { x: CENTER.x - DISTANCE, y: CENTER.y + DISTANCE }, // Bitbucket: bottom-left
-      { x: CENTER.x + DISTANCE, y: CENTER.y + DISTANCE }, // Azure: bottom-right
-    ]
-
     // Initial state
     gsap.set(sourceNodeRefs.current, { opacity: 0, scale: 0.8, transformOrigin: 'center center' })
     gsap.set(serverNodeRef.current, { opacity: 0 })
@@ -42,8 +40,7 @@ const HeroAnimation = () => {
     // Prepare lines for draw-in
     lineRefs.current.forEach((line) => {
       if (line) {
-        const len = Math.sqrt(Math.pow(CENTER.x - sources[0].x, 2) + Math.pow(CENTER.y - sources[0].y, 2))
-        gsap.set(line, { strokeDasharray: len, strokeDashoffset: len, opacity: 1 })
+        gsap.set(line, { strokeDasharray: LINE_LENGTH, strokeDashoffset: LINE_LENGTH, opacity: 1 })
       }
     })
 
@@ -161,10 +158,7 @@ const HeroAnimation = () => {
     }, '<')
 
     tl.to(lineRefs.current, {
-      strokeDashoffset: () => {
-        const len = Math.sqrt(Math.pow(CENTER.x - sources[0].x, 2) + Math.pow(CENTER.y - sources[0].y, 2))
-        return len
-      },
+      strokeDashoffset: LINE_LENGTH,
       duration: 0.3
     }, '<')
 
@@ -186,16 +180,6 @@ const HeroAnimation = () => {
       tl.kill()
     }
   }, [])
-
-  // Source positions (X pattern)
-  const CENTER = { x: 240, y: 160 }
-  const DISTANCE = 110
-  const sources = [
-    { x: CENTER.x - DISTANCE, y: CENTER.y - DISTANCE },
-    { x: CENTER.x + DISTANCE, y: CENTER.y - DISTANCE },
-    { x: CENTER.x - DISTANCE, y: CENTER.y + DISTANCE },
-    { x: CENTER.x + DISTANCE, y: CENTER.y + DISTANCE },
-  ]
 
   return (
     <div className="w-full h-full min-h-[400px] flex items-center justify-center relative" style={{ perspective: '1000px' }}>

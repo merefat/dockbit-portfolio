@@ -10,8 +10,8 @@ interface GridMeshSceneProps {
 
 const GridMeshScene = ({ theme, isMobile, reducedMotion }: GridMeshSceneProps) => {
   const groupRef = useRef<THREE.Group>(null)
-  const pointsRef = useRef<THREE.Points>(null)
-  const linesRef = useRef<THREE.LineSegments>(null)
+  const pointUniformsRef = useRef<{ uTime: { value: number } } | null>(null)
+  const lineUniformsRef = useRef<{ uTime: { value: number } } | null>(null)
   
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
@@ -23,7 +23,7 @@ const GridMeshScene = ({ theme, isMobile, reducedMotion }: GridMeshSceneProps) =
   }), [isMobile])
 
   // Create grid geometry and colors
-  const { pointGeometry, lineGeometry, initialPositions } = useMemo(() => {
+  const { pointGeometry, lineGeometry } = useMemo(() => {
     const { segmentsX, segmentsY, spacing } = gridConfig
     const pointCount = (segmentsX + 1) * (segmentsY + 1)
     
@@ -84,7 +84,7 @@ const GridMeshScene = ({ theme, isMobile, reducedMotion }: GridMeshSceneProps) =
     const lineGeometry = new THREE.BufferGeometry()
     lineGeometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(linePositions), 3))
     
-    return { pointGeometry, lineGeometry, initialPositions: positions.slice() }
+    return { pointGeometry, lineGeometry }
   }, [gridConfig, theme])
 
   // Mouse parallax
@@ -102,115 +102,89 @@ const GridMeshScene = ({ theme, isMobile, reducedMotion }: GridMeshSceneProps) =
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [isMobile, reducedMotion])
 
+  const pointOpacity = theme === 'dark' ? 0.7 : 0.5
+  const lineOpacity = theme === 'dark' ? 0.25 : 0.15
+  const lineColor = theme === 'dark' ? '#1ebbd4' : '#17293c'
+
+  const pointMaterial = useMemo(() => {
+    const mat = new THREE.PointsMaterial({
+      size: isMobile ? 0.04 : 0.05,
+      vertexColors: true,
+      transparent: true,
+      opacity: pointOpacity,
+      sizeAttenuation: true,
+      depthWrite: false,
+    })
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime = { value: 0 }
+      shader.uniforms.uRippleStrength = { value: reducedMotion ? 0 : 1 }
+      shader.vertexShader = 'uniform float uTime;\nuniform float uRippleStrength;\n' + shader.vertexShader
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `#include <begin_vertex>
+         float distFromCenter = length(transformed.xz);
+         transformed.y = sin(distFromCenter * 2.0 - uTime * 1.5) * 0.08 * exp(-distFromCenter * 0.15) * uRippleStrength;`
+      )
+      pointUniformsRef.current = shader.uniforms as { uTime: { value: number } }
+    }
+    return mat
+  }, [pointOpacity, isMobile, reducedMotion])
+
+  const lineMaterial = useMemo(() => {
+    const mat = new THREE.LineBasicMaterial({
+      color: lineColor,
+      transparent: true,
+      opacity: lineOpacity,
+      depthWrite: false,
+    })
+    mat.onBeforeCompile = (shader) => {
+      shader.uniforms.uTime = { value: 0 }
+      shader.uniforms.uRippleStrength = { value: reducedMotion ? 0 : 1 }
+      shader.vertexShader = 'uniform float uTime;\nuniform float uRippleStrength;\n' + shader.vertexShader
+      shader.vertexShader = shader.vertexShader.replace(
+        '#include <begin_vertex>',
+        `#include <begin_vertex>
+         float distFromCenter = length(transformed.xz);
+         transformed.y = sin(distFromCenter * 2.0 - uTime * 1.5) * 0.08 * exp(-distFromCenter * 0.15) * uRippleStrength;`
+      )
+      lineUniformsRef.current = shader.uniforms as { uTime: { value: number } }
+    }
+    return mat
+  }, [lineColor, lineOpacity, reducedMotion])
+
   useFrame((state) => {
     const time = state.clock.getElapsedTime()
-    
+
+    if (pointUniformsRef.current) {
+      pointUniformsRef.current.uTime.value = time
+    }
+    if (lineUniformsRef.current) {
+      lineUniformsRef.current.uTime.value = time
+    }
+
     if (groupRef.current) {
-      // Tilted floor perspective
       groupRef.current.rotation.x = -1.2
-      
+
       if (!reducedMotion) {
-        // Slow sine-wave camera drift
         groupRef.current.position.y = Math.sin(time * 0.15) * 0.15
         groupRef.current.position.z = Math.sin(time * 0.1) * 0.1
-        
-        // Mouse parallax
+
         if (!isMobile) {
           groupRef.current.position.x = mousePos.x * 0.3
           groupRef.current.rotation.z = mousePos.y * 0.05
         }
       }
     }
-    
-    // Gentle vertex ripple
-    if (pointsRef.current && !reducedMotion) {
-      const posAttr = pointsRef.current.geometry.getAttribute('position') as THREE.BufferAttribute
-      const positions = posAttr.array as Float32Array
-      const { segmentsX, segmentsY } = gridConfig
-      
-      let index = 0
-      for (let y = 0; y <= segmentsY; y++) {
-        for (let x = 0; x <= segmentsX; x++) {
-          const baseX = initialPositions[index * 3]
-          const baseZ = initialPositions[index * 3 + 2]
-          
-          // Ripple effect from center
-          const dist = Math.sqrt(baseX * baseX + baseZ * baseZ)
-          const ripple = Math.sin(dist * 2 - time * 1.5) * 0.08 * Math.exp(-dist * 0.15)
-          
-          positions[index * 3 + 1] = ripple
-          index++
-        }
-      }
-      posAttr.needsUpdate = true
-    }
-    
-    // Update line positions to match points
-    if (linesRef.current && pointsRef.current && !reducedMotion) {
-      const pointPos = pointsRef.current.geometry.getAttribute('position') as THREE.BufferAttribute
-      const linePos = linesRef.current.geometry.getAttribute('position') as THREE.BufferAttribute
-      const { segmentsX, segmentsY } = gridConfig
-      
-      const pointPositions = pointPos.array as Float32Array
-      const linePositions = linePos.array as Float32Array
-      
-      let lineIndex = 0
-      // Horizontal lines
-      for (let y = 0; y <= segmentsY; y++) {
-        for (let x = 0; x < segmentsX; x++) {
-          const i1 = y * (segmentsX + 1) + x
-          const i2 = y * (segmentsX + 1) + x + 1
-          linePositions[lineIndex++] = pointPositions[i1 * 3]
-          linePositions[lineIndex++] = pointPositions[i1 * 3 + 1]
-          linePositions[lineIndex++] = pointPositions[i1 * 3 + 2]
-          linePositions[lineIndex++] = pointPositions[i2 * 3]
-          linePositions[lineIndex++] = pointPositions[i2 * 3 + 1]
-          linePositions[lineIndex++] = pointPositions[i2 * 3 + 2]
-        }
-      }
-      // Vertical lines
-      for (let x = 0; x <= segmentsX; x++) {
-        for (let y = 0; y < segmentsY; y++) {
-          const i1 = y * (segmentsX + 1) + x
-          const i2 = (y + 1) * (segmentsX + 1) + x
-          linePositions[lineIndex++] = pointPositions[i1 * 3]
-          linePositions[lineIndex++] = pointPositions[i1 * 3 + 1]
-          linePositions[lineIndex++] = pointPositions[i1 * 3 + 2]
-          linePositions[lineIndex++] = pointPositions[i2 * 3]
-          linePositions[lineIndex++] = pointPositions[i2 * 3 + 1]
-          linePositions[lineIndex++] = pointPositions[i2 * 3 + 2]
-        }
-      }
-      linePos.needsUpdate = true
-    }
   })
-
-  const pointOpacity = theme === 'dark' ? 0.7 : 0.5
-  const lineOpacity = theme === 'dark' ? 0.25 : 0.15
-  const lineColor = theme === 'dark' ? '#1ebbd4' : '#17293c'
 
   return (
     <group ref={groupRef}>
-      {/* Points */}
-      <points ref={pointsRef} geometry={pointGeometry}>
-        <pointsMaterial
-          size={isMobile ? 0.04 : 0.05}
-          vertexColors
-          transparent
-          opacity={pointOpacity}
-          sizeAttenuation
-          depthWrite={false}
-        />
+      <points geometry={pointGeometry}>
+        <primitive object={pointMaterial} attach="material" />
       </points>
-      
-      {/* Grid lines */}
-      <lineSegments ref={linesRef} geometry={lineGeometry}>
-        <lineBasicMaterial
-          color={lineColor}
-          transparent
-          opacity={lineOpacity}
-          depthWrite={false}
-        />
+
+      <lineSegments geometry={lineGeometry}>
+        <primitive object={lineMaterial} attach="material" />
       </lineSegments>
     </group>
   )

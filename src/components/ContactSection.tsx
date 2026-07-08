@@ -5,6 +5,13 @@ import GradientText from './GradientText'
 const WEB3FORMS_ACCESS_KEY = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY || 'dddaa146-17a7-4718-9858-9ea5579da96a'
 const WEB3FORMS_ENDPOINT = 'https://api.web3forms.com/submit'
 
+const benefits = [
+  'Fixed pricing, no hidden fees',
+  'Honest advice, no sales pressure',
+  'Direct access to senior engineers',
+  'Free onboarding & support',
+]
+
 const ContactSection = () => {
   const [submitted, setSubmitted] = useState(false)
   const [sending, setSending] = useState(false)
@@ -104,12 +111,7 @@ const ContactSection = () => {
               Whether it's flaky CI pipelines, slow rollback times, or infrastructure that's too complex to manage — we've seen it all. Book a free demo and let's get your deployments flowing.
             </p>
             <ul className="space-y-3 mb-8">
-              {[
-                'Fixed pricing, no hidden fees',
-                'Honest advice, no sales pressure',
-                'Direct access to senior engineers',
-                'Free onboarding & support',
-              ].map((item, i) => (
+              {benefits.map((item, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-navy/80 dark:text-white/80">
                   <Check size={16} className="text-cyan flex-shrink-0 mt-0.5" />
                   <span>{item}</span>

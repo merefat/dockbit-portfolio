@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, lazy, useState, useMemo } from 'react'
 import {
   Check,
   X,
@@ -73,10 +73,20 @@ const StatusCell = ({ status, note }: { status: FeatureStatus; note?: string }) 
 const ComparisonMatrix = () => {
   const [selectedCompetitor, setSelectedCompetitor] = useState<string>('all')
 
+  const competitorMap = useMemo(() => {
+    const map = new Map<string, typeof competitors[number]>()
+    for (const c of competitors) {
+      map.set(c.id, c)
+    }
+    return map
+  }, [])
+
   const filteredCompetitors =
     selectedCompetitor === 'all'
       ? competitors
-      : competitors.filter((c) => c.id === selectedCompetitor)
+      : competitorMap.has(selectedCompetitor)
+        ? [competitorMap.get(selectedCompetitor)!]
+        : competitors
 
   return (
     <section className="py-16 md:py-24 bg-offwhite dark:bg-navy-dark relative overflow-hidden">

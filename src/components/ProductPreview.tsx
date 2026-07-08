@@ -1,16 +1,24 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { LayoutDashboard, Folder, Rocket, Server, Monitor, Bell, MoreHorizontal, Plus, Search } from 'lucide-react'
+
+const tabs = [
+  { id: 'projects', label: 'Projects', icon: Folder },
+  { id: 'deployments', label: 'Deployments', icon: Rocket },
+  { id: 'nodes', label: 'Nodes', icon: Server },
+  { id: 'monitoring', label: 'Monitoring', icon: Monitor },
+  { id: 'notifications', label: 'Notifications', icon: Bell },
+]
 
 const ProductPreview = () => {
   const [activeTab, setActiveTab] = useState('projects')
 
-  const tabs = [
-    { id: 'projects', label: 'Projects', icon: Folder },
-    { id: 'deployments', label: 'Deployments', icon: Rocket },
-    { id: 'nodes', label: 'Nodes', icon: Server },
-    { id: 'monitoring', label: 'Monitoring', icon: Monitor },
-    { id: 'notifications', label: 'Notifications', icon: Bell },
-  ]
+  const tabContentMap = useMemo<Record<string, React.FC>>(() => ({
+    projects: ProjectsView,
+    deployments: DeploymentsView,
+    nodes: NodesView,
+    monitoring: MonitoringView,
+    notifications: NotificationsView,
+  }), [])
 
   return (
     <section className="py-16 md:py-24 bg-offwhite">
@@ -106,11 +114,10 @@ const ProductPreview = () => {
               </div>
 
               {/* Content based on active tab */}
-              {activeTab === 'projects' && <ProjectsView />}
-              {activeTab === 'deployments' && <DeploymentsView />}
-              {activeTab === 'nodes' && <NodesView />}
-              {activeTab === 'monitoring' && <MonitoringView />}
-              {activeTab === 'notifications' && <NotificationsView />}
+              {(() => {
+                const Content = tabContentMap[activeTab]
+                return Content ? <Content /> : null
+              })()}
             </div>
           </div>
         </div>

@@ -2,18 +2,19 @@ import { Check, X, ArrowRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import BreathingGlowBackground from './animations/BreathingGlowBackground'
 
+const features = [
+  { name: 'Deploy any stack', dokploy: true, dockbit: true },
+  { name: 'Docker Compose support', dokploy: true, dockbit: true },
+  { name: 'Built-in databases', dokploy: true, dockbit: true },
+  { name: 'Multi-node clustering', dokploy: true, dockbit: true },
+  { name: 'Auto SSL with Traefik', dokploy: true, dockbit: true },
+  { name: 'Real-time monitoring', dokploy: true, dockbit: true },
+  { name: 'Auto GitHub setup', dokploy: false, dockbit: true, highlight: true, description: 'Zero-config repo import' },
+  { name: 'Tailscale VPN built-in', dokploy: false, dockbit: true, highlight: true, description: 'Private mesh networking' },
+  { name: 'Cloudflare integration', dokploy: false, dockbit: true, highlight: true, description: 'Managed from dashboard' },
+]
+
 const ComparisonStrip = () => {
-  const features = [
-    { name: 'Deploy any stack', dokploy: true, dockbit: true },
-    { name: 'Docker Compose support', dokploy: true, dockbit: true },
-    { name: 'Built-in databases', dokploy: true, dockbit: true },
-    { name: 'Multi-node clustering', dokploy: true, dockbit: true },
-    { name: 'Auto SSL with Traefik', dokploy: true, dockbit: true },
-    { name: 'Real-time monitoring', dokploy: true, dockbit: true },
-    { name: 'Auto GitHub setup', dokploy: false, dockbit: true, highlight: true, description: 'Zero-config repo import' },
-    { name: 'Tailscale VPN built-in', dokploy: false, dockbit: true, highlight: true, description: 'Private mesh networking' },
-    { name: 'Cloudflare integration', dokploy: false, dockbit: true, highlight: true, description: 'Managed from dashboard' },
-  ]
 
   return (
     <section className="py-16 md:py-24 bg-offwhite dark:bg-navy-dark relative">

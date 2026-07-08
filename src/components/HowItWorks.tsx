@@ -5,24 +5,25 @@ import { Suspense, lazy } from 'react'
 const SceneCanvas = lazy(() => import('./animations/three/SceneCanvas'))
 const ParticleNetworkScene = lazy(() => import('./animations/three/ParticleNetworkScene'))
 
+const steps = [
+  {
+    icon: GitBranch,
+    title: 'Connect your repository',
+    description: 'Link your GitHub repository. Dockbit automatically detects your stack and configures the build.',
+  },
+  {
+    icon: Server,
+    title: 'Deploy from Git or Docker',
+    description: 'Push to your branch or use Docker Compose. Dockbit handles the rest automatically.',
+  },
+  {
+    icon: LayoutDashboard,
+    title: 'Manage from one dashboard',
+    description: 'Monitor all your services, databases, and deployments from a single interface.',
+  },
+]
+
 const HowItWorks = () => {
-  const steps = [
-    {
-      icon: GitBranch,
-      title: 'Connect your repository',
-      description: 'Link your GitHub repository. Dockbit automatically detects your stack and configures the build.',
-    },
-    {
-      icon: Server,
-      title: 'Deploy from Git or Docker',
-      description: 'Push to your branch or use Docker Compose. Dockbit handles the rest automatically.',
-    },
-    {
-      icon: LayoutDashboard,
-      title: 'Manage from one dashboard',
-      description: 'Monitor all your services, databases, and deployments from a single interface.',
-    },
-  ]
 
   return (
     <section className="py-16 md:py-24 bg-white dark:bg-navy relative overflow-hidden">

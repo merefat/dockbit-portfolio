@@ -4,6 +4,57 @@ import * as THREE from 'three'
 
 const BOUNDS: [number, number, number] = [14, 7, 5]
 
+class SpatialHashGrid {
+  private cellSize: number
+  private cells: Map<number, number[]>
+
+  constructor(cellSize: number) {
+    this.cellSize = cellSize
+    this.cells = new Map()
+  }
+
+  private hash(cx: number, cy: number, cz: number): number {
+    return cx * 73856093 ^ cy * 19349663 ^ cz * 83492791
+  }
+
+  clear() {
+    this.cells.clear()
+  }
+
+  insert(index: number, x: number, y: number, z: number) {
+    const cx = Math.floor(x / this.cellSize)
+    const cy = Math.floor(y / this.cellSize)
+    const cz = Math.floor(z / this.cellSize)
+    const key = this.hash(cx, cy, cz)
+    let bucket = this.cells.get(key)
+    if (!bucket) {
+      bucket = []
+      this.cells.set(key, bucket)
+    }
+    bucket.push(index)
+  }
+
+  queryNeighbors(x: number, y: number, z: number): number[] {
+    const cx = Math.floor(x / this.cellSize)
+    const cy = Math.floor(y / this.cellSize)
+    const cz = Math.floor(z / this.cellSize)
+    const result: number[] = []
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        for (let dz = -1; dz <= 1; dz++) {
+          const bucket = this.cells.get(this.hash(cx + dx, cy + dy, cz + dz))
+          if (bucket) {
+            for (let k = 0; k < bucket.length; k++) {
+              result.push(bucket[k])
+            }
+          }
+        }
+      }
+    }
+    return result
+  }
+}
+
 const lineVertexShader = `
 attribute float aAlpha;
 varying float vAlpha;
@@ -92,6 +143,8 @@ const ParticleNetworkScene = ({
     [lineColor]
   )
 
+  const grid = useMemo(() => new SpatialHashGrid(maxDistance), [maxDistance])
+
   useFrame((state, delta) => {
     const points = pointsRef.current
     if (!points) return
@@ -124,19 +177,33 @@ const ParticleNetworkScene = ({
     const lineAlpha = lineGeometry.getAttribute('aAlpha') as THREE.BufferAttribute
     const lp = linePos.array as Float32Array
     const la = lineAlpha.array as Float32Array
+
+    grid.clear()
+    for (let i = 0; i < particleCount; i++) {
+      grid.insert(i, positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2])
+    }
+
     let segIndex = 0
+    const maxDistSq = maxDistance * maxDistance
     for (let i = 0; i < particleCount && segIndex < maxSegments; i++) {
-      for (let j = i + 1; j < particleCount && segIndex < maxSegments; j++) {
-        const dx = positions[i * 3] - positions[j * 3]
-        const dy = positions[i * 3 + 1] - positions[j * 3 + 1]
-        const dz = positions[i * 3 + 2] - positions[j * 3 + 2]
-        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
-        if (dist < maxDistance) {
+      const ix = positions[i * 3]
+      const iy = positions[i * 3 + 1]
+      const iz = positions[i * 3 + 2]
+      const neighbors = grid.queryNeighbors(ix, iy, iz)
+      for (let k = 0; k < neighbors.length && segIndex < maxSegments; k++) {
+        const j = neighbors[k]
+        if (j <= i) continue
+        const dx = ix - positions[j * 3]
+        const dy = iy - positions[j * 3 + 1]
+        const dz = iz - positions[j * 3 + 2]
+        const distSq = dx * dx + dy * dy + dz * dz
+        if (distSq < maxDistSq) {
+          const dist = Math.sqrt(distSq)
           const alpha = (1 - dist / maxDistance) * lineAlphaScale
           const base = segIndex * 6
-          lp[base] = positions[i * 3]
-          lp[base + 1] = positions[i * 3 + 1]
-          lp[base + 2] = positions[i * 3 + 2]
+          lp[base] = ix
+          lp[base + 1] = iy
+          lp[base + 2] = iz
           lp[base + 3] = positions[j * 3]
           lp[base + 4] = positions[j * 3 + 1]
           lp[base + 5] = positions[j * 3 + 2]

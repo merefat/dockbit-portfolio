@@ -5,14 +5,42 @@ import { motion, AnimatePresence } from 'framer-motion'
 const SceneCanvas = lazy(() => import('./animations/three/SceneCanvas'))
 const DataStreamScene = lazy(() => import('./animations/three/DataStreamScene'))
 
+const tabs = [
+  { id: 'deployments', label: 'Deployments', icon: GitBranch },
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'infrastructure', label: 'Infrastructure', icon: Server },
+]
+
+const deploymentFeed = [
+  { branch: 'main', hash: 'a1b2c3d', service: 'api-web', duration: '42s', time: '2m ago', status: 'success' },
+  { branch: 'feature/auth', hash: 'e4f5g6h', service: 'api-auth', duration: '38s', time: '5m ago', status: 'success' },
+  { branch: 'main', hash: 'i7j8k9l', service: 'worker-jobs', duration: '51s', time: '12m ago', status: 'success' },
+  { branch: 'staging', hash: 'm0n1o2p', service: 'api-web', duration: '45s', time: '18m ago', status: 'building' },
+]
+
+const dashboardStats = [
+  { label: 'Services', value: '12' },
+  { label: 'Deployments', value: '234' },
+  { label: 'Uptime', value: '99.9%' },
+  { label: 'Nodes', value: '3' },
+]
+
+const resourceUsage = [
+  { label: 'CPU', value: 67 },
+  { label: 'Memory', value: 45 },
+  { label: 'Storage', value: 32 },
+]
+
+const infrastructureItems = [
+  { name: 'Manager Nodes', status: 'healthy', latency: '12ms' },
+  { name: 'Reverse Proxy', status: 'healthy', latency: '8ms' },
+  { name: 'Registry', status: 'healthy', latency: '15ms' },
+  { name: 'VPN', status: 'healthy', latency: '5ms' },
+  { name: 'Builder', status: 'healthy', latency: '22ms' },
+]
+
 const DeepDiveTabs = () => {
   const [activeTab, setActiveTab] = useState('deployments')
-
-  const tabs = [
-    { id: 'deployments', label: 'Deployments', icon: GitBranch },
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'infrastructure', label: 'Infrastructure', icon: Server },
-  ]
 
   const renderContent = () => {
     switch (activeTab) {
@@ -27,12 +55,7 @@ const DeepDiveTabs = () => {
               </span>
             </div>
             <div className="space-y-3">
-              {[
-                { branch: 'main', hash: 'a1b2c3d', service: 'api-web', duration: '42s', time: '2m ago', status: 'success' },
-                { branch: 'feature/auth', hash: 'e4f5g6h', service: 'api-auth', duration: '38s', time: '5m ago', status: 'success' },
-                { branch: 'main', hash: 'i7j8k9l', service: 'worker-jobs', duration: '51s', time: '12m ago', status: 'success' },
-                { branch: 'staging', hash: 'm0n1o2p', service: 'api-web', duration: '45s', time: '18m ago', status: 'building' },
-              ].map((deploy, i) => (
+              {deploymentFeed.map((deploy, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 bg-offwhite rounded-md border border-lightgray dark:bg-white/5 dark:border-white/10">
                   <div className="w-8 h-8 bg-cyan/10 rounded-sm flex items-center justify-center">
                     <GitBranch size={14} className="text-cyan" />
@@ -66,12 +89,7 @@ const DeepDiveTabs = () => {
         return (
           <div className="bg-white rounded-md border border-lightgray p-6 shadow-card dark:bg-navy dark:border-white/10">
             <div className="grid grid-cols-2 gap-4 mb-4">
-              {[
-                { label: 'Services', value: '12' },
-                { label: 'Deployments', value: '234' },
-                { label: 'Uptime', value: '99.9%' },
-                { label: 'Nodes', value: '3' },
-              ].map((stat, i) => (
+              {dashboardStats.map((stat, i) => (
                 <div key={i} className="bg-offwhite p-4 rounded-md border border-lightgray dark:bg-white/5 dark:border-white/10">
                   <div className="text-navy/60 text-xs mb-1 dark:text-white/60">{stat.label}</div>
                   <div className="text-2xl font-bold text-cyan">{stat.value}</div>
@@ -81,11 +99,7 @@ const DeepDiveTabs = () => {
             <div className="bg-offwhite p-4 rounded-md border border-lightgray dark:bg-white/5 dark:border-white/10">
               <div className="text-navy/60 text-xs mb-3 dark:text-white/60">Resource Usage</div>
               <div className="space-y-3">
-                {[
-                  { label: 'CPU', value: 67 },
-                  { label: 'Memory', value: 45 },
-                  { label: 'Storage', value: 32 },
-                ].map((resource, i) => (
+                {resourceUsage.map((resource, i) => (
                   <div key={i}>
                     <div className="flex items-center justify-between text-xs mb-1">
                       <span className="text-navy/60 dark:text-white/60">{resource.label}</span>
@@ -107,13 +121,7 @@ const DeepDiveTabs = () => {
         return (
           <div className="bg-white rounded-md border border-lightgray p-6 shadow-card dark:bg-navy dark:border-white/10">
             <div className="space-y-3">
-              {[
-                { name: 'Manager Nodes', status: 'healthy', latency: '12ms' },
-                { name: 'Reverse Proxy', status: 'healthy', latency: '8ms' },
-                { name: 'Registry', status: 'healthy', latency: '15ms' },
-                { name: 'VPN', status: 'healthy', latency: '5ms' },
-                { name: 'Builder', status: 'healthy', latency: '22ms' },
-              ].map((item, i) => (
+              {infrastructureItems.map((item, i) => (
                 <div key={i} className="flex items-center justify-between p-3 bg-offwhite rounded-md border border-lightgray dark:bg-white/5 dark:border-white/10">
                   <div className="flex items-center gap-3">
                     <Server size={16} className="text-cyan/60" />

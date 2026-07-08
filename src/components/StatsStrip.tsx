@@ -1,10 +1,11 @@
+const stats = [
+  '155+ deployments tracked',
+  '3 regions',
+  '1-click rollback',
+  '0 Dockerfiles needed',
+]
+
 const StatsStrip = () => {
-  const stats = [
-    '155+ deployments tracked',
-    '3 regions',
-    '1-click rollback',
-    '0 Dockerfiles needed',
-  ]
 
   return (
     <section className="py-8 border-y border-lightgray bg-white dark:bg-navy dark:border-white/10">

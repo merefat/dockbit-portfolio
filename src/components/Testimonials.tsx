@@ -1,42 +1,42 @@
 import { Quote, Star } from 'lucide-react'
 import GradientText from './GradientText'
 
-const Testimonials = () => {
-  const testimonials = [
-    {
-      quote: 'Dockbit saved us hours every week. The auto GitHub setup is a game changer.',
-      name: 'Sarah Chen',
-      role: 'CTO, TechStartup',
-    },
-    {
-      quote: 'Finally, a self-hosted platform that just works. No more Dockerfile headaches.',
-      name: 'Marcus Johnson',
-      role: 'Senior Dev, Agency',
-    },
-    {
-      quote: 'The Tailscale integration alone is worth it. Our infra is now actually secure.',
-      name: 'Elena Rodriguez',
-      role: 'DevOps Lead, Enterprise',
-    },
-    {
-      quote: 'Deployed our entire stack in under 10 minutes. The dashboard is incredibly intuitive.',
-      name: 'James Park',
-      role: 'Founder, Startup',
-    },
-    {
-      quote: 'Multi-node clustering was a breeze. Dockbit handles what used to take our team days.',
-      name: 'Aisha Patel',
-      role: 'Platform Engineer',
-    },
-    {
-      quote: 'WordPress hosting on our own infrastructure — exactly what we needed. No vendor lock-in.',
-      name: 'David Kim',
-      role: 'Lead Developer, Agency',
-    },
-  ]
+const testimonials = [
+  {
+    quote: 'Dockbit saved us hours every week. The auto GitHub setup is a game changer.',
+    name: 'Sarah Chen',
+    role: 'CTO, TechStartup',
+  },
+  {
+    quote: 'Finally, a self-hosted platform that just works. No more Dockerfile headaches.',
+    name: 'Marcus Johnson',
+    role: 'Senior Dev, Agency',
+  },
+  {
+    quote: 'The Tailscale integration alone is worth it. Our infra is now actually secure.',
+    name: 'Elena Rodriguez',
+    role: 'DevOps Lead, Enterprise',
+  },
+  {
+    quote: 'Deployed our entire stack in under 10 minutes. The dashboard is incredibly intuitive.',
+    name: 'James Park',
+    role: 'Founder, Startup',
+  },
+  {
+    quote: 'Multi-node clustering was a breeze. Dockbit handles what used to take our team days.',
+    name: 'Aisha Patel',
+    role: 'Platform Engineer',
+  },
+  {
+    quote: 'WordPress hosting on our own infrastructure — exactly what we needed. No vendor lock-in.',
+    name: 'David Kim',
+    role: 'Lead Developer, Agency',
+  },
+]
 
-  // Duplicate testimonials for seamless looping
-  const carouselItems = [...testimonials, ...testimonials]
+const carouselItems = [...testimonials, ...testimonials]
+
+const Testimonials = () => {
 
   return (
     <section className="py-16 md:py-24 bg-offwhite dark:bg-navy-dark overflow-hidden">
